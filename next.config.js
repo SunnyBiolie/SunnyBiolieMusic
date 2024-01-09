@@ -1,4 +1,15 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {}
+const { hostname } = require("os");
 
-module.exports = nextConfig
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        hostname: "cavkfwwrkhusmjwuwcba.supabase.co",
+        protocol: "https",
+      },
+    ],
+  },
+};
+
+module.exports = nextConfig;
