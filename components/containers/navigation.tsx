@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { NavItem } from "./nav-item";
+import { NavItem } from "../my-ui/nav-item";
 
 export const Navigation = () => {
   const pathname = usePathname();

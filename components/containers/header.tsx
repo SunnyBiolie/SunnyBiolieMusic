@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { useUser } from "@/hooks/use-user";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "../ui/skeleton";
 import { Navigation } from "./navigation";
 import { createSupabaseClientComponent } from "@/lib/supabase/client-component";
 

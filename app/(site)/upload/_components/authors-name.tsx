@@ -1,4 +1,4 @@
-import { TagWrapper } from "@/components/tag-wrapper";
+import { TagWrapper } from "@/components/my-ui/tag-wrapper";
 
 interface AuthorsNameProps {
   authorsName: string[];
