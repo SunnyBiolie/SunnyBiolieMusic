@@ -8,7 +8,7 @@ interface SearchResultProps {
 }
 
 export const SearchResult = ({ songs, className }: SearchResultProps) => {
-  console.log(songs);
+  console.log("Search result: " + songs);
   const onMusicPlay = useOnMusicPLay(songs!);
 
   if (!songs) {
@@ -24,7 +24,7 @@ export const SearchResult = ({ songs, className }: SearchResultProps) => {
         <HorizontalMedia
           key={song.id}
           song={song}
-          thumbnail="none"
+          thumbnail={false}
           onClick={(songId: string) => onMusicPlay(songId)}
         />
       ))}

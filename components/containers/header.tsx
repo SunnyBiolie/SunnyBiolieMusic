@@ -12,7 +12,7 @@ import { createSupabaseClientComponent } from "@/lib/supabase/client-component";
 export const Header = () => {
   const router = useRouter();
   const supabase = createSupabaseClientComponent();
-  const { user, isLoading } = useUser();
+  const { userInfo, isLoading } = useUser();
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
@@ -32,8 +32,13 @@ export const Header = () => {
   return (
     <div className="w-full h-16 px-4 flex items-center justify-between">
       <Navigation />
-      {user ? (
-        <div>
+      {userInfo ? (
+        <div className="flex items-center gap-x-6">
+          {userInfo.is_admin === true && (
+            <Link href="/admin" className="font-medium hover:underline">
+              Admin
+            </Link>
+          )}
           <Button
             onClick={handleSignOut}
             className="rounded-full font-semibold text-[14px]"

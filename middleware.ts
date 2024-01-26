@@ -1,5 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
+import { privateRoute } from "./config/route";
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -59,6 +60,11 @@ export async function middleware(request: NextRequest) {
   if (pathname === "/auth") {
     const { data } = await supabase.auth.getSession();
     if (data.session) return NextResponse.redirect(request.nextUrl.origin);
+  }
+
+  if (privateRoute.includes(pathname)) {
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) return NextResponse.redirect(request.nextUrl.origin);
   }
 
   return response;

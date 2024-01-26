@@ -2,33 +2,41 @@
 
 import { HeartIcon as HeartIconFill } from "@heroicons/react/24/solid";
 import { HeartIcon } from "@heroicons/react/24/outline";
-import { useEffect, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { useUser } from "@/hooks/use-user";
 import { toast } from "sonner";
 import { createSupabaseClientComponent } from "@/lib/supabase/client-component";
+import { useRouter } from "next/navigation";
 
 interface LikeButtonProps {
   songId: string;
+  isInPlayer?: boolean;
 }
 
-export const LikeButton = ({ songId }: LikeButtonProps) => {
+export const LikeButton = ({ songId, isInPlayer }: LikeButtonProps) => {
   const [isLiked, setIsLiked] = useState<boolean>();
   const { user, userInfo } = useUser();
   const supabase = createSupabaseClientComponent();
+
+  const router = useRouter();
 
   useEffect(() => {
     if (!user?.id) {
       return;
     }
-
-    setIsLiked(userInfo?.liked_songs?.includes(songId));
-  }, [userInfo?.liked_songs]);
+    const isLiked = userInfo?.liked_songs?.includes(songId);
+    setIsLiked(isLiked);
+  }, [userInfo?.liked_songs?.length, songId, user?.id, userInfo?.liked_songs]);
 
   if (!user?.id || !userInfo) {
     return <></>;
   }
 
-  const handleClick = async () => {
+  const handleClick = async (
+    e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>
+  ) => {
+    e.stopPropagation();
+
     if (!user) return toast.error(`Please log in to continue.`);
 
     if (!songId) return toast.error(`There is no song to continue.`);
@@ -50,9 +58,16 @@ export const LikeButton = ({ songId }: LikeButtonProps) => {
       } else {
         setIsLiked(false);
         toast.success(`Removed out from favorites.`);
+
+        userInfo.liked_songs = updatedData;
       }
     } else {
       let updatedData = userInfo.liked_songs ? userInfo.liked_songs : [];
+      if (updatedData.indexOf(songId) > -1) {
+        return toast.error(
+          `UI error: This song has already been added to favorites.`
+        );
+      }
       updatedData.push(songId);
 
       const { error } = await supabase
@@ -65,12 +80,16 @@ export const LikeButton = ({ songId }: LikeButtonProps) => {
       } else {
         setIsLiked(true);
         toast.success(`Added this song to favorites.`);
+
+        userInfo.liked_songs = updatedData;
       }
     }
+
+    router.refresh();
   };
 
   return (
-    <div onClick={handleClick} className="cursor-pointer">
+    <div onClick={(e) => handleClick(e)} className="cursor-pointer">
       {isLiked ? (
         <HeartIconFill className="text-sky-600 w-6 h-6" />
       ) : (

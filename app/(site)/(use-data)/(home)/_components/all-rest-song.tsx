@@ -1,4 +1,7 @@
-import { HorizontalMedia } from "@/components/my-ui/horizontal-media";
+import {
+  HorizontalMedia,
+  HorizontalMediaSkeleton,
+} from "@/components/my-ui/horizontal-media";
 import useOnMusicPLay from "@/hooks/use-on-music-play";
 import { Song } from "@/types/custom";
 
@@ -7,7 +10,7 @@ interface AllRestSongProps {
 }
 
 export const AllRestSong = ({ songs }: AllRestSongProps) => {
-  console.log("all rest songs");
+  console.log("Reload all rest songs");
   const onMusicPlay = useOnMusicPLay(songs!);
 
   if (!songs || songs.length === 0) {
@@ -26,6 +29,19 @@ export const AllRestSong = ({ songs }: AllRestSongProps) => {
             onClick={(songId: string) => onMusicPlay(songId)}
           />
         ))}
+      </div>
+    </div>
+  );
+};
+
+AllRestSong.Skeleton = function SkeletonAllRestSong() {
+  return (
+    <div>
+      <h2 className="text-2xl font-semibold pb-4">All song</h2>
+      <div className="flex flex-col gap-y-3">
+        <HorizontalMediaSkeleton />
+        <HorizontalMediaSkeleton />
+        <HorizontalMediaSkeleton />
       </div>
     </div>
   );

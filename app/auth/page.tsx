@@ -46,7 +46,7 @@ const AuthPage = ({ searchParams }: AuthPageProps) => {
           redirectTo="http://localhost:3000/"
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}
-          providers={[]}
+          providers={["google"]}
           view={view as ViewType}
           theme="dark"
         />

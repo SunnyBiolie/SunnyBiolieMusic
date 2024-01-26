@@ -1,12 +1,13 @@
 import Image from "next/image";
 import { SongPreviewDataProps } from "../page";
 import { PhotoIcon, PlayIcon } from "@heroicons/react/24/solid";
+import { LegacyRef, forwardRef } from "react";
 
-export const PreviewSong = ({
-  data,
-}: {
+interface PreviewSongProps {
   data: SongPreviewDataProps | null;
-}) => {
+}
+
+export const PreviewSong = function PreviewSong({ data }: PreviewSongProps) {
   const blobImage = new Blob([data?.image as BlobPart], { type: "image/*" });
   const imageUrl = URL.createObjectURL(blobImage);
 
@@ -55,7 +56,7 @@ export const PreviewSong = ({
           <audio src={songUrl} controls></audio>
         ) : (
           <div className="relative w-[300px] h-[54px] border-4 border-dashed rounded-full">
-            <PlayIcon className="absolute top-1/2 left-4 -translate-y-1/2 w-5  h-5 text-neutral-600" />
+            <PlayIcon className="absolute top-1/2 left-4 -translate-y-1/2 w-5 h-5 text-neutral-600" />
           </div>
         )}
       </div>

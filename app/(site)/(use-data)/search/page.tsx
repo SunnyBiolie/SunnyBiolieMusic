@@ -16,27 +16,29 @@ const SearchPage = ({ searchParams }: SearchPageProps) => {
   const [searchResults, setSearchResults] = useState<Song[] | null>(null);
   const { allSong } = useData();
 
-  const searchSongByTitle = (title: string) => {
-    if (!searchParams.title) return null;
-
-    let results: Song[] = [];
-    allSong?.forEach((song) => {
-      if (song.title?.toLocaleLowerCase().includes(title.toLocaleLowerCase())) {
-        results.push(song);
-      }
-    });
-
-    return results;
-  };
-
   useEffect(() => {
+    const searchSongByTitle = (title: string) => {
+      if (!searchParams.title) return null;
+
+      let results: Song[] = [];
+      allSong?.forEach((song) => {
+        if (
+          song.title?.toLocaleLowerCase().includes(title.toLocaleLowerCase())
+        ) {
+          results.push(song);
+        }
+      });
+
+      return results;
+    };
+
     setSearchResults(searchSongByTitle(searchParams.title));
-  }, [searchParams.title]);
+  }, [searchParams.title, allSong]);
 
   console.log("Parent: " + searchParams.title);
 
   return (
-    <div className="md:mx-4 md:my-2">
+    <div className="md:mx-4 md:my-2 p-4">
       <SearchInput />
       <SearchResult className="my-2 py-2" songs={searchResults} />
     </div>

@@ -2,8 +2,11 @@
 
 import { usePathname } from "next/navigation";
 import { NavItem } from "../my-ui/nav-item";
+import { privateRoute } from "@/config/route";
+import { useUser } from "@/hooks/use-user";
 
 export const Navigation = () => {
+  const { userInfo } = useUser();
   const pathname = usePathname();
 
   const routes = [
@@ -26,14 +29,20 @@ export const Navigation = () => {
 
   return (
     <nav className="flex gap-x-2 my-4 min-w-[160px]">
-      {routes.map((route, index) => (
-        <NavItem
-          key={index}
-          title={route.title}
-          path={route.path}
-          isActive={route.isActive}
-        />
-      ))}
+      {routes.map((route, index) => {
+        if (privateRoute.includes(route.path) && !userInfo) {
+          return <></>;
+        } else {
+          return (
+            <NavItem
+              key={index}
+              title={route.title}
+              path={route.path}
+              isActive={route.isActive}
+            />
+          );
+        }
+      })}
     </nav>
   );
 };

@@ -52,6 +52,7 @@ export const UserContextProvider = (props: Props) => {
     } else if (!user && !isLoadingSession && !isLoadingData) {
       setUserInfo(null);
     }
+    console.log("useUser");
   }, [user, isLoadingSession]);
 
   const value = {

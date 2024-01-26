@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { ElementType, ReactComponentElement } from "react";
+import { ScrollArea } from "../ui/scroll-area";
 
 interface BoxWrapperProps {
   children: React.ReactNode;
@@ -8,8 +8,10 @@ interface BoxWrapperProps {
 
 export const BoxWrapper = ({ children, className }: BoxWrapperProps) => {
   return (
-    <div className={cn("bg-neutral-900 p-4 rounded-lg", className)}>
+    <ScrollArea
+      className={cn("relative bg-neutral-900 p-4 rounded-lg", className)}
+    >
       {children}
-    </div>
+    </ScrollArea>
   );
 };

@@ -2,7 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { memo, useCallback, useEffect, useState } from "react";
+import {
+  ElementRef,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { AuthorsName } from "./authors-name";
 import { useUser } from "@/hooks/use-user";
@@ -11,6 +18,8 @@ import uniqid from "uniqid";
 import { useRouter } from "next/navigation";
 import { createSupabaseClientComponent } from "@/lib/supabase/client-component";
 import { SongPreviewDataProps } from "../page";
+import useTransformLang from "@/hooks/use-transform-lang";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface UploadFormProps {
   updatePreviewData: (data: SongPreviewDataProps) => void;
@@ -19,11 +28,14 @@ interface UploadFormProps {
 export const UploadForm = memo(function UploadForm({
   updatePreviewData,
 }: UploadFormProps) {
-  console.log("--- Load Upload Form ---");
+  console.log("Load Upload Form");
 
   const [authors, setAuthors] = useState<string[]>([]);
-  const { user } = useUser();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
+  const getAudioDurationRef = useRef<ElementRef<"audio">>(null);
+  const { user, isLoading: isUserLoading } = useUser();
+  const { toLowerCaseNonAccentVietnamese } = useTransformLang();
 
   const supabase = createSupabaseClientComponent();
 
@@ -69,14 +81,22 @@ export const UploadForm = memo(function UploadForm({
     setAuthors((authors) => authors.filter((author, i) => i !== index));
   }, []);
 
-  if (!user) {
-    return <div>Log in to continues</div>;
+  if (isUserLoading) {
+    return <UploadFormSkeleton />;
+  } else if (!user) {
+    return <div>Please log in to continue.</div>;
   }
 
   const onSubmit: SubmitHandler<FieldValues> = async (values) => {
     try {
-      const imageFile = values.image?.[0];
-      const songFile = values.song?.[0];
+      setIsLoading(true);
+
+      const imageFile: File = values.image?.[0];
+      const songFile: File = values.song?.[0];
+
+      const blobSong = new Blob([songFile as BlobPart], { type: "audio/mpeg" });
+      const songUrl = URL.createObjectURL(blobSong);
+      getAudioDurationRef.current!.src = songUrl;
 
       if (!imageFile || !songFile) {
         toast.error("Missing field(s)");
@@ -86,33 +106,43 @@ export const UploadForm = memo(function UploadForm({
 
       const { data: songData, error: songError } = await supabase.storage
         .from("songs")
-        .upload(`${values.title}-${uniqueId}-audio`, songFile, {
-          cacheControl: "3600",
-          upsert: false,
-        });
+        .upload(
+          `${toLowerCaseNonAccentVietnamese(values.title)}-${uniqueId}-audio`,
+          songFile,
+          {
+            cacheControl: "3600",
+            upsert: false,
+          }
+        );
 
       if (songError) {
+        setIsLoading(false);
         return toast.error(`Failed to upload song: ${songError.message}`);
       }
 
       const { data: imageData, error: imageError } = await supabase.storage
         .from("images")
-        .upload(`${values.title}-${uniqueId}-image`, imageFile, {
-          cacheControl: "3600",
-          upsert: false,
-        });
+        .upload(
+          `${toLowerCaseNonAccentVietnamese(values.title)}-${uniqueId}-image`,
+          imageFile,
+          {
+            cacheControl: "3600",
+            upsert: false,
+          }
+        );
 
       if (imageError) {
         const { error: removeSongError } = await supabase.storage
           .from("songs")
-          .remove([`${values.title}-${uniqueId}-audio`]);
+          .remove([
+            `${toLowerCaseNonAccentVietnamese(values.title)}-${uniqueId}-audio`,
+          ]);
 
         if (removeSongError) {
-          return toast.error(
-            `Failed to remove song: ${removeSongError.message}`
-          );
+          toast.error(`Failed to remove song: ${removeSongError.message}`);
         }
 
+        setIsLoading(false);
         return toast.error(`Failed to upload image: ${imageError.message}`);
       }
 
@@ -122,6 +152,7 @@ export const UploadForm = memo(function UploadForm({
         authors: string;
         song_path: string;
         image_path: string;
+        duration: number;
       }
 
       const uploadData: createSongSchema = {
@@ -130,6 +161,7 @@ export const UploadForm = memo(function UploadForm({
         authors: values.authors,
         song_path: songData.path,
         image_path: imageData.path,
+        duration: getAudioDurationRef.current!.duration,
       };
 
       const { error: createError } = await supabase
@@ -137,13 +169,36 @@ export const UploadForm = memo(function UploadForm({
         .insert(uploadData);
 
       if (createError) {
+        const { error: removeSongError } = await supabase.storage
+          .from("songs")
+          .remove([
+            `${toLowerCaseNonAccentVietnamese(values.title)}-${uniqueId}-audio`,
+          ]);
+
+        if (removeSongError) {
+          toast.error(`Failed to remove song: ${removeSongError.message}`);
+        }
+
+        const { error: removeImageError } = await supabase.storage
+          .from("images")
+          .remove([
+            `${toLowerCaseNonAccentVietnamese(values.title)}-${uniqueId}-image`,
+          ]);
+
+        if (removeImageError) {
+          toast.error(`Failed to remove song: ${removeImageError.message}`);
+        }
+
+        setIsLoading(false);
         return toast.error(createError.message);
       }
 
+      setIsLoading(false);
       router.refresh();
       toast.success(`Upload "${values.title}" successfully`);
       reset();
     } catch (error) {
+      setIsLoading(false);
       return toast.error("Something went wrong");
     }
   };
@@ -173,6 +228,7 @@ export const UploadForm = memo(function UploadForm({
             placeholder="Title"
             className="placeholder:text-neutral-500"
             aria-invalid={errors.title ? "true" : "false"}
+            disabled={isLoading}
           />
           {errors.title?.type === "required" && (
             <p className="error-input">Title is required.</p>
@@ -185,6 +241,7 @@ export const UploadForm = memo(function UploadForm({
             {...register("authors", { required: true })}
             className="hidden"
             aria-invalid={errors.authors ? "true" : "false"}
+            disabled={isLoading}
           />
           {!errors.authors && getSongValues("authors") === "" ? (
             <p className="text-sm text-neutral-600 border-2 border-dashed rounded-md p-2 cursor-default">
@@ -212,6 +269,7 @@ export const UploadForm = memo(function UploadForm({
               placeholder="Author"
               className="placeholder:text-neutral-500"
               aria-invalid={errorsAuthor.author ? "true" : "false"}
+              disabled={isLoading}
             />
             {errorsAuthor.author?.type === "maxLength" && (
               <p className=" error-input">Max length 25 is required.</p>
@@ -220,7 +278,9 @@ export const UploadForm = memo(function UploadForm({
               <p className="error-input">Can not add empty name of author.</p>
             )}
           </div>
-          <Button variant="secondary">Add</Button>
+          <Button variant="secondary" disabled={isLoading}>
+            Add
+          </Button>
         </form>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -235,6 +295,7 @@ export const UploadForm = memo(function UploadForm({
               {...register("song", { required: true })}
               aria-invalid={errors.song ? "true" : "false"}
               className="h-auto p-0 file:bg-neutral-800 file:text-neutral-200 file:p-2.5 file:mr-2"
+              disabled={isLoading}
             />
             {errors.song?.type === "required" && (
               <p className="error-input">Song is required.</p>
@@ -249,6 +310,7 @@ export const UploadForm = memo(function UploadForm({
               {...register("image", { required: true })}
               aria-invalid={errors.image ? "true" : "false"}
               className="h-auto p-0 file:bg-neutral-800 file:text-neutral-200 file:p-2.5 file:mr-2"
+              disabled={isLoading}
             />
             {errors.image?.type === "required" && (
               <p className="error-input">Image is required.</p>
@@ -261,14 +323,46 @@ export const UploadForm = memo(function UploadForm({
             form="addSong"
             variant="primary"
             className="grow"
+            disabled={isLoading}
           >
             Create
           </Button>
-          <Button onClick={updatePreviewDataClick} variant="ghost">
+          <Button
+            onClick={updatePreviewDataClick}
+            variant="ghost"
+            disabled={isLoading}
+          >
             Preview
           </Button>
         </div>
       </div>
+      <audio
+        src=""
+        id="get-audio-duration"
+        ref={getAudioDurationRef}
+        className="hidden"
+        controls={false}
+      ></audio>
     </div>
   );
 });
+
+const UploadFormSkeleton = () => {
+  return (
+    <div className="px-2">
+      <div className="font-bold text-2xl mb-5">Upload your song</div>
+      <div className="flex flex-col gap-y-4">
+        <div className="flex flex-col gap-y-4 flex-wrap">
+          <Skeleton className="w-full h-9" />
+          <Skeleton className="w-full h-9" />
+          <Skeleton className="w-full h-9" />
+          <Skeleton className="w-full h-9" />
+          <div className="flex gap-x-2">
+            <Skeleton className="w-full h-9" />
+            <Skeleton className="w-20 h-9" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

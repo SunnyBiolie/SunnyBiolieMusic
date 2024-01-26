@@ -20,7 +20,7 @@ export const useLoadImagePath = ({
     .from("images")
     .getPublicUrl(song.image_path);
 
-  console.log("fetched image");
+  console.log("Image retrieved.");
 
   return data.publicUrl;
 };

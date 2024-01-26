@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import { createSupabaseClientComponent } from "@/lib/supabase/client-component";
 import { Song } from "@/types/custom";
 import {
@@ -9,7 +10,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import { toast } from "sonner";
 
 type DataContextType = {
   allSong: Song[] | null;
@@ -40,21 +40,25 @@ export const DataContextProvider = (props: Props) => {
   );
 
   useEffect(() => {
+    setIsLoading(true);
     Promise.allSettled([getAllSong()]).then((res) => {
-      const result = res[0];
+      const allSongPromise = res[0];
+
       toast.info("Loading all songs");
 
-      if (result.status === "fulfilled") {
-        setAllSong(result.value.data);
+      if (allSongPromise.status === "fulfilled") {
+        setAllSong(allSongPromise.value.data);
       } else {
         setAllSong(null);
       }
+
+      setIsLoading(false);
     });
   }, [getAllSong]);
 
   const data = {
     allSong,
-    isLoading,
+    isLoading: isLoading,
   };
 
   return <DataContext.Provider value={data} {...props} />;

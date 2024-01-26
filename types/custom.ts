@@ -3,6 +3,7 @@ export interface UserInfo {
   full_name?: string;
   avatar_url?: string;
   liked_songs?: string[];
+  is_admin: boolean;
 }
 
 export interface Song {
@@ -12,4 +13,16 @@ export interface Song {
   title: string;
   song_path: string;
   image_path: string;
+  duration: number;
+  created_at: string;
+}
+
+export interface Collection {
+  id: string;
+  user_id: string;
+  title: string;
+  songs: string[] | null;
+  duration: number | null;
+  image: string | null;
+  created_at: string;
 }
