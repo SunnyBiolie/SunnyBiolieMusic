@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import SupabaseSessionProvider from "@/providers/SupabaseSessionProvider";
 import { UserContextProvider } from "@/hooks/use-user";
 import "react-tooltip/dist/react-tooltip.css";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -30,6 +31,7 @@ export default function RootLayout({
             {children}
           </UserContextProvider>
         </SupabaseSessionProvider>
+        <SpeedInsights />
       </body>
     </html>
   );

@@ -43,7 +43,11 @@ const AuthPage = ({ searchParams }: AuthPageProps) => {
           </div>
         )} */}
         <Auth
-          redirectTo="http://localhost:3000/"
+          redirectTo={
+            process.env.NODE_ENV === "production"
+              ? "https://sunny-biolie-music.vercel.app/"
+              : "http://localhost:3000/"
+          }
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}
           providers={["google"]}
