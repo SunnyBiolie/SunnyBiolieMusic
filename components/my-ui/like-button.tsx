@@ -1,19 +1,25 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { MouseEvent, useEffect, useState } from "react";
+import { toast } from "sonner";
 import { HeartIcon as HeartIconFill } from "@heroicons/react/24/solid";
 import { HeartIcon } from "@heroicons/react/24/outline";
-import { MouseEvent, useEffect, useState } from "react";
-import { useUser } from "@/hooks/use-user";
-import { toast } from "sonner";
 import { createSupabaseClientComponent } from "@/lib/supabase/client-component";
-import { useRouter } from "next/navigation";
+import { useUser } from "@/hooks/use-user";
 
 interface LikeButtonProps {
   songId: string;
   isInPlayer?: boolean;
+  className?: string;
 }
 
-export const LikeButton = ({ songId, isInPlayer }: LikeButtonProps) => {
+export const LikeButton = ({
+  songId,
+  isInPlayer,
+  className,
+}: LikeButtonProps) => {
   const [isLiked, setIsLiked] = useState<boolean>();
   const { user, userInfo } = useUser();
   const supabase = createSupabaseClientComponent();
@@ -89,7 +95,14 @@ export const LikeButton = ({ songId, isInPlayer }: LikeButtonProps) => {
   };
 
   return (
-    <div onClick={(e) => handleClick(e)} className="cursor-pointer">
+    <div
+      onClick={(e) => handleClick(e)}
+      className={cn(
+        "cursor-pointer",
+        className,
+        (isLiked || isInPlayer) && "block"
+      )}
+    >
       {isLiked ? (
         <HeartIconFill className="text-sky-600 w-6 h-6" />
       ) : (

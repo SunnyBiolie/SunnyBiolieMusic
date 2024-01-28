@@ -14,7 +14,7 @@ export const NavItem = ({ title, path, isActive }: NavItemProps) => {
         href={path}
         className={cn(
           "flex items-center justify-center gap-x-2 font-semibold hover:no-underline transition",
-          isActive ? "" : "underline text-[#ddd]/90"
+          isActive ? "text-sky-600" : "underline text-[#ddd]/90"
         )}
       >
         {title}

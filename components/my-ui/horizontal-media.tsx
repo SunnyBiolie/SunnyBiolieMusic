@@ -8,6 +8,7 @@ import { MouseEvent, memo } from "react";
 import { TruncateText } from "./truncate-text";
 import { TimerTransform } from "./timer-transform";
 import { Skeleton } from "../ui/skeleton";
+import { SongOptions } from "./song-options";
 
 interface HorizontalMediaProps {
   song: Song;
@@ -15,6 +16,7 @@ interface HorizontalMediaProps {
   thumbnail: boolean;
   onClick: (songId: string) => void;
   isInPlayer?: boolean;
+  isInCollection?: boolean;
 }
 
 export const HorizontalMedia = memo(function HorizontalMedia({
@@ -23,6 +25,7 @@ export const HorizontalMedia = memo(function HorizontalMedia({
   thumbnail,
   onClick,
   isInPlayer,
+  isInCollection,
 }: HorizontalMediaProps) {
   const thumbImagePath = useLoadImagePath({
     song,
@@ -33,19 +36,16 @@ export const HorizontalMedia = memo(function HorizontalMedia({
     return <></>;
   }
 
-  const handleClick = (
-    e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>
-  ) => {
+  const handleClick = () => {
     onClick(song.id);
   };
 
   return (
     <div
       className={cn(
-        "hover:bg-neutral-700/75 rounded-lg w-full flex items-center gap-x-3 px-2.5 py-2",
+        "hover:bg-neutral-700/75 rounded-lg w-full flex items-center gap-x-3 px-2.5 py-2 group",
         className
       )}
-      onClick={(e) => handleClick(e)}
     >
       {thumbnail ? (
         <div className="shrink-0 relative h-12 aspect-square rounded-sm overflow-hidden">
@@ -53,7 +53,7 @@ export const HorizontalMedia = memo(function HorizontalMedia({
             src={thumbImagePath!}
             alt="Thumb Image"
             fill
-            sizes="auto"
+            sizes="full"
             className="object-cover"
           />
         </div>
@@ -72,6 +72,7 @@ export const HorizontalMedia = memo(function HorizontalMedia({
           className="capitalize text-sm font-semibold hover:underline cursor-pointer"
           text={song.title}
           lineClamp={1}
+          onClick={() => handleClick()}
         />
         <TruncateText
           text={song.authors}
@@ -82,10 +83,23 @@ export const HorizontalMedia = memo(function HorizontalMedia({
           lineClamp={1}
         />
       </div>
-      {!isInPlayer && <TimerTransform duration={song.duration} />}
-      <div id="like-container" className="shrink-0 mx-2">
-        <LikeButton songId={song.id} isInPlayer={isInPlayer} />
+      <div className="shrink-0 mx-2">
+        <LikeButton
+          songId={song.id}
+          isInPlayer={isInPlayer}
+          className="hidden group-hover:block"
+        />
       </div>
+      {!isInPlayer && (
+        <div className="flex items-center justify-center gap-x-1">
+          <TimerTransform duration={song.duration} />
+          <SongOptions
+            song={song}
+            className="opacity-0 group-hover:opacity-100"
+            isInCollection={isInCollection}
+          />
+        </div>
+      )}
     </div>
   );
 });

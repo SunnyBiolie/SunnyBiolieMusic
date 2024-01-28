@@ -20,6 +20,7 @@ import { createSupabaseClientComponent } from "@/lib/supabase/client-component";
 import { SongPreviewDataProps } from "../page";
 import useTransformLang from "@/hooks/use-transform-lang";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTriggerFetchData } from "@/hooks/use-data-zustand";
 
 interface UploadFormProps {
   updatePreviewData: (data: SongPreviewDataProps) => void;
@@ -38,6 +39,7 @@ export const UploadForm = memo(function UploadForm({
   const { toLowerCaseNonAccentVietnamese } = useTransformLang();
 
   const supabase = createSupabaseClientComponent();
+  const fetch = useTriggerFetchData();
 
   const {
     register,
@@ -194,6 +196,7 @@ export const UploadForm = memo(function UploadForm({
       }
 
       setIsLoading(false);
+      fetch.setFetchSongs(uniqueId);
       router.refresh();
       toast.success(`Upload "${values.title}" successfully`);
       reset();

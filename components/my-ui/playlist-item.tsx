@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { HeartIcon } from "@heroicons/react/24/outline";
 import { MusicalNoteIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
+import { Skeleton } from "../ui/skeleton";
 
 interface PlaylistItemProps {
   title: string;
@@ -29,4 +30,8 @@ export const PlaylistItem = ({
       <div className="">{title}</div>
     </Link>
   );
+};
+
+PlaylistItem.Skeleton = function SkeletonPlaylistItem() {
+  return <Skeleton className="w-full h-10" />;
 };

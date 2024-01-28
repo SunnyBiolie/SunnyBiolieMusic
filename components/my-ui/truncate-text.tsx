@@ -7,12 +7,14 @@ interface TruncateTextProps {
   text: string;
   className: string;
   lineClamp: 1 | 2 | 3 | 4 | 5 | 6;
+  onClick?: () => void;
 }
 
 export const TruncateText = ({
   text,
   className,
   lineClamp,
+  onClick,
 }: TruncateTextProps) => {
   // const [duration, setDuration] = useState<number>(0);
   const [widthGap, setWidthGap] = useState<number>(0);
@@ -76,6 +78,7 @@ export const TruncateText = ({
             className
             // widthGap > 0 && `right-0 transition-all ease-linear duration-2000`
           )}
+          onClick={onClick}
           // onMouseEnter={() => {
           //   if (widthGap > 0) {
           //     textRef.current?.classList.add(

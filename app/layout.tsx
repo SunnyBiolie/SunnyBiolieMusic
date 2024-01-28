@@ -31,7 +31,7 @@ export default function RootLayout({
             {children}
           </UserContextProvider>
         </SupabaseSessionProvider>
-        <SpeedInsights />
+        {/* <SpeedInsights /> */}
       </body>
     </html>
   );

@@ -5,7 +5,7 @@ import { NewSongs } from "./_components/new-songs";
 import { AllRestSong } from "./_components/all-rest-song";
 import { useUser } from "@/hooks/use-user";
 
-const numberNewSongsDisplay = 1;
+const numberNewSongsDisplay = 4;
 
 const HomePage = () => {
   const { allSong, isLoading: isLoadingData } = useData();

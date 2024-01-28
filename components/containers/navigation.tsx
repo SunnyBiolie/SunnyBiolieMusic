@@ -31,11 +31,11 @@ export const Navigation = () => {
     <nav className="flex gap-x-2 my-4 min-w-[160px]">
       {routes.map((route, index) => {
         if (privateRoute.includes(route.path) && !userInfo) {
-          return <></>;
+          return;
         } else {
           return (
             <NavItem
-              key={index}
+              key={route.title}
               title={route.title}
               path={route.path}
               isActive={route.isActive}

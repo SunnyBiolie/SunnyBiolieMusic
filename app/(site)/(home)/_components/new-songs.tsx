@@ -26,7 +26,7 @@ export const NewSongs = ({ songs }: NewSongsProps) => {
           <CardMedia
             key={song.id}
             song={song}
-            priority={true}
+            priority={false}
             onClick={(id: string) => onMusicPlay(id)}
           />
         ))}

@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import { useUser } from "@/hooks/use-user";
 import { createSupabaseClientComponent } from "@/lib/supabase/client-component";
 import { useState } from "react";
+import uniqid from "uniqid";
+import { useTriggerFetchData } from "@/hooks/use-data-zustand";
 
 export const CreateCollectionModal = () => {
   const createCollectionModal = useCreateCollectionModal();
@@ -17,6 +19,7 @@ export const CreateCollectionModal = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const supabase = createSupabaseClientComponent();
+  const triggerFetch = useTriggerFetchData();
 
   const {
     register,
@@ -48,6 +51,8 @@ export const CreateCollectionModal = () => {
       }
 
       setIsLoading(false);
+      createCollectionModal.onClose();
+      triggerFetch.setFetchCollections(uniqid());
       return toast.success(
         `Created "${values.collectionTitle}" collection successfully.`
       );

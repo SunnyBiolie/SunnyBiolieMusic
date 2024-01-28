@@ -1,5 +1,4 @@
-import { localStorageKey } from "@/config/site";
-import { Song } from "@/types/custom";
+import { Collection, Song } from "@/types/custom";
 import { create } from "zustand";
 
 export interface MusicPlayerStore {
@@ -40,4 +39,19 @@ interface QueueStore {
 export const useQueue = create<QueueStore>((set) => ({
   songs: [],
   setSongs: (songs: Song[]) => set({ songs: songs }),
+}));
+
+interface TriggerFetchStore {
+  fetchSongs: string | null;
+  setFetchSongs: (value: string | null) => void;
+  fetchCollections: string | null;
+  setFetchCollections: (value: string | null) => void;
+}
+
+export const useTriggerFetchData = create<TriggerFetchStore>((set) => ({
+  fetchSongs: "",
+  setFetchSongs: (value: string | null) => set({ fetchSongs: value }),
+  fetchCollections: "",
+  setFetchCollections: (value: string | null) =>
+    set({ fetchCollections: value }),
 }));

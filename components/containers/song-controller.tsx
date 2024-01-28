@@ -14,6 +14,14 @@ export const SongController = () => {
 
   const audioRef = useRef<ElementRef<"audio"> | null>(null);
 
+  if (isLoading) {
+    return (
+      <div className="w-full min-h-[72px] flex items-center justify-center text-xl font-semibold tracking-widest">
+        Loading...
+      </div>
+    );
+  }
+
   if (!song) {
     return <></>;
   }

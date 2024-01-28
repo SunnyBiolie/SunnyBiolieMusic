@@ -4,12 +4,13 @@ import { LeftSidebar } from "@/components/containers/left-sidebar";
 import { RightSibebar } from "@/components/containers/right-sidebar";
 import { SongController } from "@/components/containers/song-controller";
 import { CreateCollectionModal } from "@/components/my-ui/create-collection-modal";
+import { DataContextProvider } from "@/hooks/use-data";
 
 const SiteLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <>
+    <DataContextProvider>
       <CreateCollectionModal />
-      <div className="h-screen w-full flex flex-col">
+      <div className="h-screen w-full max-w-screen-2xl flex flex-col">
         <div className="grow min-h-[calc(100vh-80px)] max-h-full flex">
           <LeftSidebar />
           <div className="grow shrink min-w-[500px] flex flex-col p-2 gap-2">
@@ -22,7 +23,7 @@ const SiteLayout = ({ children }: { children: React.ReactNode }) => {
         </div>
         <SongController />
       </div>
-    </>
+    </DataContextProvider>
   );
 };
 
