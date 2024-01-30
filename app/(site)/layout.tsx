@@ -10,12 +10,12 @@ const SiteLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <DataContextProvider>
       <CreateCollectionModal />
-      <div className="h-screen w-full max-w-screen-2xl flex flex-col">
+      <div className="h-screen w-full max-w-[1600px] m-auto flex flex-col">
         <div className="grow min-h-[calc(100vh-80px)] max-h-full flex">
           <LeftSidebar />
           <div className="grow shrink min-w-[500px] flex flex-col p-2 gap-2">
             <Header />
-            <BoxWrapper className="grow overflow-auto p-0">
+            <BoxWrapper className="overflow-auto p-0 h-fit h-max-full">
               {children}
             </BoxWrapper>
           </div>

@@ -19,7 +19,7 @@ const UploadPage = () => {
   }, []);
 
   return (
-    <div className="flex p-4">
+    <div className="flex px-4 pt-5 pb-6">
       <div className="grow">
         <UploadForm updatePreviewData={updateSongPreviewData} />
       </div>

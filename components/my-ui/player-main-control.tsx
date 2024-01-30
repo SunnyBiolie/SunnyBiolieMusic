@@ -10,12 +10,13 @@ import {
   TrackNextIcon,
   LoopIcon,
 } from "@radix-ui/react-icons";
-import { Slider } from "../ui/slider";
+import * as SliderPrimitive from "@radix-ui/react-slider";
 import { Song } from "@/types/custom";
 import { useLoadSongPath } from "@/hooks/useLoadSongPath";
 import { TimerTransform } from "./timer-transform";
 import { MusicPlayerStore } from "@/hooks/use-data-zustand";
 import { localStorageKey } from "@/config/site";
+import { Slider } from "./my-slider";
 
 interface PlayerMainControlProps {
   song: Song;
@@ -83,7 +84,6 @@ export const PlayerMainControl = forwardRef(function PlayerMainControl(
         break;
       }
       case -1: {
-        console.log("-1");
         if (currIndex !== 0) {
           musicPlayer.setId(songsId[currIndex + number]);
         } else {
@@ -125,7 +125,6 @@ export const PlayerMainControl = forwardRef(function PlayerMainControl(
     if (!isPlaying) return;
 
     const interval = setInterval(() => {
-      console.log("loop");
       if (!audioRef.current) return;
       const currentTrack = audioRef.current;
 
@@ -237,13 +236,21 @@ export const PlayerMainControl = forwardRef(function PlayerMainControl(
             )}
           </div>
           <div className="grow">
-            <Slider
+            {/* <Slider
               defaultValue={[0]}
               value={[position]}
               onValueChange={([e]) => handldeGoTo(e)}
               min={0}
               max={100}
               step={100 / audioRef.current.duration}
+            /> */}
+            <Slider
+              min={0}
+              max={100}
+              step={100 / audioRef.current.duration}
+              defaultValue={0}
+              value={position}
+              onValueChange={handldeGoTo}
             />
           </div>
           <div>

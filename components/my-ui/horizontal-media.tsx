@@ -4,7 +4,7 @@ import { PlayIcon } from "@heroicons/react/24/solid";
 import { useLoadImagePath } from "@/hooks/useLoadImagePath";
 import { Song } from "@/types/custom";
 import { LikeButton } from "./like-button";
-import { MouseEvent, memo } from "react";
+import { memo } from "react";
 import { TruncateText } from "./truncate-text";
 import { TimerTransform } from "./timer-transform";
 import { Skeleton } from "../ui/skeleton";

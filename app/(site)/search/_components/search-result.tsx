@@ -8,7 +8,6 @@ interface SearchResultProps {
 }
 
 export const SearchResult = ({ songs, className }: SearchResultProps) => {
-  console.log("Search result: " + songs);
   const onMusicPlay = useOnMusicPLay(songs!);
 
   if (!songs) {

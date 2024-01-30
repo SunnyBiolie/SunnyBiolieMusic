@@ -35,8 +35,6 @@ const SearchPage = ({ searchParams }: SearchPageProps) => {
     setSearchResults(searchSongByTitle(searchParams.title));
   }, [searchParams.title, allSong]);
 
-  console.log("Parent: " + searchParams.title);
-
   return (
     <div className="md:mx-4 md:my-2 p-4">
       <SearchInput />

@@ -25,7 +25,7 @@ const FavoritesPage = () => {
         (songId) => !favoriteSongs?.map((song) => song.id).includes(songId)
       );
 
-      toast.info(`Some song(s) have been deleted by admin ${deleted![0]}`);
+      toast.info(`Some song(s) have been deleted by admin "${deleted![0]}".`);
     }
   }, []);
 

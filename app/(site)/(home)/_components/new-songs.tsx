@@ -7,7 +7,6 @@ interface NewSongsProps {
 }
 
 export const NewSongs = ({ songs }: NewSongsProps) => {
-  console.log("Reload new songs");
   const onMusicPlay = useOnMusicPLay(songs);
 
   if (songs.length === 0)

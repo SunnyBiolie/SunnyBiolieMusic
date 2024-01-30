@@ -81,7 +81,7 @@ const CollectionPage = () => {
       .eq("id", params.collectionId);
     if (error) {
       setIsDeleteLoading(false);
-      return toast.error(error.message);
+      return toast.error(`Failed to delete collection: ${error.message}.`);
     }
 
     setIsDeleteLoading(false);

@@ -108,6 +108,7 @@ export const TruncateText = ({
         delayShow={1000}
         style={{ zIndex: 999 }}
         clickable
+        openOnClick
       />
     </div>
   );

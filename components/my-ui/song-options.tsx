@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { Song } from "@/types/custom";
 import { CheckIcon, EllipsisVerticalIcon } from "@heroicons/react/24/solid";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { ElementRef, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 interface SongOptionsProps {
@@ -21,16 +21,17 @@ export const SongOptions = ({
   isInCollection,
   song,
 }: SongOptionsProps) => {
-  const { collections } = useData();
-
   const params = useParams();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isAddLoading, setIsAddLoading] = useState<boolean>(false);
   const [isRemoveLoading, setIsRemoveLoading] = useState<boolean>(false);
-  const createCollectionModal = useCreateCollectionModal();
+
+  const ref = useRef<ElementRef<"div">>(null);
 
   const supabase = createSupabaseClientComponent();
+  const createCollectionModal = useCreateCollectionModal();
+  const { collections } = useData();
 
   const addSongToCollection = async (songId: string, collectionId: string) => {
     if (isAddLoading) return;
@@ -101,71 +102,84 @@ export const SongOptions = ({
     }
   };
 
+  const [position, setPosition] = useState<[number, number]>([0, 0]);
+
   return (
-    <div className="relative">
+    <div ref={ref} className="shadow-md">
       <EllipsisVerticalIcon
         className={cn("w-5 h-5 cursor-pointer", className)}
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          setIsOpen(true);
+          setPosition([
+            window.innerHeight - ref.current?.getBoundingClientRect().top!,
+            window.innerWidth - ref.current?.getBoundingClientRect().left!,
+          ]);
+        }}
       />
-      <div
-        className={cn(
-          isOpen ? "absolute" : "hidden",
-          "bottom-[100%] right-[0%] z-[101] rounded-md overflow-hidden shadow-md"
-        )}
-      >
-        <div className="bg-zinc-950 p-3 w-52">
-          {isInCollection ? (
-            <div
-              className={cn(
-                "-mx-3 px-3 py-2 text-neutral-400 hover:text-[#eee] hover:bg-rose-600 transition text-sm font-medium cursor-pointer flex items-center justify-between",
-                isRemoveLoading && "cursor-not-allowed opacity-50"
-              )}
-              onClick={removeSongFromCollection}
-            >
-              Remove from collection
-            </div>
-          ) : (
-            <div className="flex flex-col gap-y-2">
-              <div className="self-center font-semibold">Add to Collection</div>
-              <div className="">
-                {collections?.length !== 0 ? (
-                  collections?.map((col) => (
-                    <div
-                      key={col.id}
-                      className={cn(
-                        "-mx-3 px-3 py-1 text-neutral-400 hover:text-[#ddd] hover:bg-neutral-800 transition text-sm font-medium capitalize cursor-pointer flex items-center justify-between",
-                        isAddLoading && "cursor-not-allowed opacity-50",
-                        col.songs?.includes(song.id) && "opacity-60"
-                      )}
-                      onClick={() => addSongToCollection(song.id, col.id)}
-                    >
-                      {col.title}
-                      {col.songs?.includes(song.id) && (
-                        <CheckIcon className="2-4 h-4"></CheckIcon>
-                      )}
-                    </div>
-                  ))
-                ) : (
-                  <div
-                    className="-mx-3 px-3 py-1 hover:bg-neutral-800 transition text-sm font-medium cursor-pointer flex items-center gap-x-1"
-                    onClick={() => {
-                      createCollectionModal.onOpen();
-                      setIsOpen(false);
-                    }}
-                  >
-                    Create collection
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
       {isOpen && (
-        <div
-          className="fixed top-0 left-0 right-0 bottom-0 z-40"
-          onClick={() => setIsOpen(false)}
-        />
+        <>
+          <div
+            style={{ bottom: `${position[0]}px`, right: `${position[1]}px` }}
+            className={cn(
+              `z-[101] rounded-md overflow-hidden shadow-md`,
+              isOpen && "fixed"
+            )}
+          >
+            <div className="bg-zinc-950 p-3 w-52">
+              {isInCollection ? (
+                <div
+                  className={cn(
+                    "-mx-3 px-3 py-2 text-neutral-400 hover:text-[#eee] hover:bg-rose-600 transition text-sm font-medium cursor-pointer flex items-center justify-between",
+                    isRemoveLoading && "cursor-not-allowed opacity-50"
+                  )}
+                  onClick={removeSongFromCollection}
+                >
+                  Remove from collection
+                </div>
+              ) : (
+                <div className="flex flex-col gap-y-2">
+                  <div className="self-center font-semibold">
+                    Add to Collection
+                  </div>
+                  <div className="">
+                    {collections?.length !== 0 ? (
+                      collections?.map((col) => (
+                        <div
+                          key={col.id}
+                          className={cn(
+                            "-mx-3 px-3 py-1 text-neutral-400 hover:text-[#ddd] hover:bg-neutral-800 transition text-sm font-medium capitalize cursor-pointer flex items-center justify-between",
+                            isAddLoading && "cursor-not-allowed opacity-50",
+                            col.songs?.includes(song.id) && "opacity-60"
+                          )}
+                          onClick={() => addSongToCollection(song.id, col.id)}
+                        >
+                          {col.title}
+                          {col.songs?.includes(song.id) && (
+                            <CheckIcon className="2-4 h-4"></CheckIcon>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <div
+                        className="-mx-3 px-3 py-1 hover:bg-neutral-800 transition text-sm font-medium cursor-pointer flex items-center gap-x-1"
+                        onClick={() => {
+                          createCollectionModal.onOpen();
+                          setIsOpen(false);
+                        }}
+                      >
+                        Create collection
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          <div
+            className="fixed top-0 left-0 right-0 bottom-0 z-40"
+            onClick={() => setIsOpen(false)}
+          />
+        </>
       )}
     </div>
   );

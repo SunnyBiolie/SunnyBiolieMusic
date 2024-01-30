@@ -20,7 +20,6 @@ export const CardMedia = memo(function CardMedia({
   priority,
   onClick,
 }: CardMediaProps) {
-  console.log("Reload card");
   const imagePath = useLoadImagePath({ song });
 
   return (
@@ -49,7 +48,7 @@ export const CardMedia = memo(function CardMedia({
           lineClamp={2}
         />
       </div>
-      <div className="hidden group-hover:block absolute top-2 right-2 bg-neutral-950/20 hover:bg-neutral-950/80 rounded-full p-[2px] z-0 transition cursor-pointer">
+      <div className="hidden group-hover:block absolute top-2 right-2 bg-neutral-950/20 hover:bg-neutral-950/80 rounded-full p-[2px]  transition cursor-pointer">
         <SongOptions song={song} className="w-5 h-5" />
       </div>
     </div>

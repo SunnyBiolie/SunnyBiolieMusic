@@ -10,7 +10,6 @@ interface AllRestSongProps {
 }
 
 export const AllRestSong = ({ songs }: AllRestSongProps) => {
-  console.log("Reload all rest songs");
   const onMusicPlay = useOnMusicPLay(songs!);
 
   if (!songs || songs.length === 0) {

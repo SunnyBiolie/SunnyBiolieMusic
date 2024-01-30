@@ -29,8 +29,6 @@ interface UploadFormProps {
 export const UploadForm = memo(function UploadForm({
   updatePreviewData,
 }: UploadFormProps) {
-  console.log("Load Upload Form");
-
   const [authors, setAuthors] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
@@ -101,7 +99,7 @@ export const UploadForm = memo(function UploadForm({
       getAudioDurationRef.current!.src = songUrl;
 
       if (!imageFile || !songFile) {
-        toast.error("Missing field(s)");
+        toast.error("Missing field(s).");
       }
 
       const uniqueId = uniqid();
@@ -119,7 +117,7 @@ export const UploadForm = memo(function UploadForm({
 
       if (songError) {
         setIsLoading(false);
-        return toast.error(`Failed to upload song: ${songError.message}`);
+        return toast.error(`Failed to upload song: ${songError.message}.`);
       }
 
       const { data: imageData, error: imageError } = await supabase.storage
@@ -141,11 +139,11 @@ export const UploadForm = memo(function UploadForm({
           ]);
 
         if (removeSongError) {
-          toast.error(`Failed to remove song: ${removeSongError.message}`);
+          toast.error(`Failed to remove song: ${removeSongError.message}.`);
         }
 
         setIsLoading(false);
-        return toast.error(`Failed to upload image: ${imageError.message}`);
+        return toast.error(`Failed to upload image: ${imageError.message}.`);
       }
 
       interface createSongSchema {
@@ -178,7 +176,7 @@ export const UploadForm = memo(function UploadForm({
           ]);
 
         if (removeSongError) {
-          toast.error(`Failed to remove song: ${removeSongError.message}`);
+          toast.error(`Failed to remove song: ${removeSongError.message}.`);
         }
 
         const { error: removeImageError } = await supabase.storage
@@ -188,7 +186,7 @@ export const UploadForm = memo(function UploadForm({
           ]);
 
         if (removeImageError) {
-          toast.error(`Failed to remove song: ${removeImageError.message}`);
+          toast.error(`Failed to remove song: ${removeImageError.message}.`);
         }
 
         setIsLoading(false);
@@ -198,11 +196,11 @@ export const UploadForm = memo(function UploadForm({
       setIsLoading(false);
       fetch.setFetchSongs(uniqueId);
       router.refresh();
-      toast.success(`Upload "${values.title}" successfully`);
+      toast.success(`Upload "${values.title}" successfully.`);
       reset();
     } catch (error) {
       setIsLoading(false);
-      return toast.error("Something went wrong");
+      return toast.error("Something went wrong when submitting whole song.");
     }
   };
 

@@ -49,8 +49,6 @@ export const DataContextProvider = (props: Props) => {
     Promise.allSettled([getAllSong()]).then((res) => {
       const allSongPromise = res[0];
 
-      toast.info("Loading all songs");
-
       if (allSongPromise.status === "fulfilled") {
         setAllSong(allSongPromise.value.data);
       } else {
@@ -82,8 +80,6 @@ export const DataContextProvider = (props: Props) => {
       setIsLoadingCollections(true);
       Promise.allSettled([getUserCollection()]).then((res) => {
         const userCollectionsPromise = res[0];
-
-        toast.info("Loading collections");
 
         if (userCollectionsPromise.status === "fulfilled") {
           setCollections(userCollectionsPromise.value.data);

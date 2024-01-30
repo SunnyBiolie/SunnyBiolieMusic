@@ -57,7 +57,9 @@ export const CreateCollectionModal = () => {
         `Created "${values.collectionTitle}" collection successfully.`
       );
     } catch (err) {
-      return toast.error("Something went wrong when creating a new collection");
+      return toast.error(
+        "Something went wrong when creating a new collection."
+      );
     }
   };
 
