@@ -2,12 +2,13 @@
 
 import { useData } from "@/hooks/use-data";
 import { useCreateCollectionModal } from "@/hooks/use-modal";
+import { useUser } from "@/hooks/use-user";
 import { createSupabaseClientComponent } from "@/lib/supabase/client-component";
 import { cn } from "@/lib/utils";
 import { Song } from "@/types/custom";
 import { CheckIcon, EllipsisVerticalIcon } from "@heroicons/react/24/solid";
 import { useParams, useRouter } from "next/navigation";
-import { ElementRef, useEffect, useRef, useState } from "react";
+import { ElementRef, useRef, useState } from "react";
 import { toast } from "sonner";
 
 interface SongOptionsProps {
@@ -26,12 +27,18 @@ export const SongOptions = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isAddLoading, setIsAddLoading] = useState<boolean>(false);
   const [isRemoveLoading, setIsRemoveLoading] = useState<boolean>(false);
+  const [position, setPosition] = useState<[number, number]>([0, 0]);
 
   const ref = useRef<ElementRef<"div">>(null);
 
   const supabase = createSupabaseClientComponent();
   const createCollectionModal = useCreateCollectionModal();
   const { collections } = useData();
+  const { user } = useUser();
+
+  if (!user) {
+    return <></>;
+  }
 
   const addSongToCollection = async (songId: string, collectionId: string) => {
     if (isAddLoading) return;
@@ -101,8 +108,6 @@ export const SongOptions = ({
       router.refresh();
     }
   };
-
-  const [position, setPosition] = useState<[number, number]>([0, 0]);
 
   return (
     <div ref={ref} className="shadow-md">
