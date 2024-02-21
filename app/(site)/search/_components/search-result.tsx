@@ -23,7 +23,7 @@ export const SearchResult = ({ songs, className }: SearchResultProps) => {
         <HorizontalMedia
           key={song.id}
           song={song}
-          thumbnail={false}
+          thumbnail={true}
           onClick={(songId: string) => onMusicPlay(songId)}
         />
       ))}

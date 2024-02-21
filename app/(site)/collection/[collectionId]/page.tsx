@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { notFound, useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import uniqid from "uniqid";
 import { useData } from "@/hooks/use-data";
@@ -22,6 +22,7 @@ import { MinusCircleIcon } from "@heroicons/react/24/outline";
 import { useTriggerFetchData } from "@/hooks/use-data-zustand";
 import { createSupabaseClientComponent } from "@/lib/supabase/client-component";
 import { toast } from "sonner";
+import Delete from "./_components/delete";
 
 const CollectionPage = () => {
   const { collections, allSong } = useData();
@@ -29,6 +30,7 @@ const CollectionPage = () => {
   const params = useParams();
   const router = useRouter();
   const [collection, setCollection] = useState<Collection | null>(null);
+  const [changingInfo, setChangingInfo] = useState<boolean>(false);
 
   useEffect(() => {
     if (collections) {
@@ -71,8 +73,10 @@ const CollectionPage = () => {
   };
 
   const [isDeleteLoading, setIsDeleteLoading] = useState<boolean>(false);
-  const supabase = createSupabaseClientComponent();
+
   const triggerFetch = useTriggerFetchData();
+  const supabase = createSupabaseClientComponent();
+
   const deleteCollection = async () => {
     setIsDeleteLoading(true);
     const { error } = await supabase
@@ -95,13 +99,13 @@ const CollectionPage = () => {
       <div className="p-4">
         {isDeleteLoading && (
           <div className="absolute top-0 left-0 right-0 bottom-0 bg-neutral-900/80 z-50 flex items-center justify-center">
-            <ArrowPathIcon className="w-10 h-10 text-rose-600 animate-spin" />
+            <ArrowPathIcon className="w-10 h-10 text-sky-600 animate-spin" />
           </div>
         )}
         <div className="flex gap-x-6 p-4">
-          <div className="basis-1/4 shrink-0 max-w-[224px]">
+          <div className="basis-1/4 shrink-0 max-w-[224px] shadow-2xl">
             {collection.image ? (
-              <div className="relative rounded-md overflow-hidden aspect-square w-full shadow-lg">
+              <div className="relative rounded-md overflow-hidden aspect-square w-full">
                 <Image
                   src={collection.image}
                   fill
@@ -111,7 +115,7 @@ const CollectionPage = () => {
                 />
               </div>
             ) : (
-              <div className="relative rounded-md overflow-hidden aspect-square w-full bg-gradient-to-b from-neutral-600 via-30% via-slate-600 to-sky-600 shadow-lg">
+              <div className="relative rounded-md overflow-hidden aspect-square w-full bg-gradient-to-b from-neutral-600 via-30% via-slate-600 to-sky-600">
                 <MusicalNoteIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:w-16 md:h-16 w-10 h-10" />
               </div>
             )}
@@ -139,15 +143,15 @@ const CollectionPage = () => {
               </PopoverTrigger>
               <PopoverContent
                 align="end"
-                className="p-0 py-3 overflow-hidden bg-zinc-950 border-0"
+                className="p-0 py-3 overflow-hidden bg-zinc-950 border-0 text-sm"
               >
                 <div
-                  className="px-3 py-1 hover:text-[#eee] hover:bg-rose-600 flex items-center gap-x-1 cursor-pointer"
-                  onClick={deleteCollection}
+                  className="px-3 py-1 text-neutral-400 hover:text-[#ddd] hover:bg-neutral-800 cursor-pointer"
+                  onClick={() => setChangingInfo(true)}
                 >
-                  <MinusCircleIcon className="w-5 h-5" />
-                  Delete
+                  Change information
                 </div>
+                <Delete funcToDo={deleteCollection} />
               </PopoverContent>
             </Popover>
           </div>
@@ -163,10 +167,9 @@ const CollectionPage = () => {
             />
           ))}
         </div>
+        {changingInfo && <div></div>}
       </div>
     );
-  } else {
-    return <div className="p-4">No collection to display.</div>;
   }
 };
 

@@ -8,6 +8,10 @@ const nextConfig = {
         hostname: "cavkfwwrkhusmjwuwcba.supabase.co",
         protocol: "https",
       },
+      {
+        hostname: "firebasestorage.googleapis.com",
+        protocol: "https",
+      },
     ],
   },
 };

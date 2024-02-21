@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { HeartIcon } from "@heroicons/react/24/outline";
+import { ArrowUpOnSquareIcon, HeartIcon } from "@heroicons/react/24/outline";
 import { MusicalNoteIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { Skeleton } from "../ui/skeleton";
@@ -9,6 +9,7 @@ interface PlaylistItemProps {
   className?: string;
   link: string;
   isActive: boolean;
+  type?: "favorites" | "your-upload" | "playlist";
 }
 
 export const PlaylistItem = ({
@@ -16,6 +17,7 @@ export const PlaylistItem = ({
   title,
   link,
   isActive,
+  type = "playlist",
 }: PlaylistItemProps) => {
   return (
     <Link
@@ -26,7 +28,13 @@ export const PlaylistItem = ({
         isActive && "bg-gradient-to-r to-cyan-500 from-blue-500"
       )}
     >
-      <MusicalNoteIcon className="w-5 h-5" />
+      {type === "playlist" ? (
+        <MusicalNoteIcon className="w-5 h-5" />
+      ) : type === "favorites" ? (
+        <HeartIcon className="w-5 h-5" />
+      ) : (
+        <ArrowUpOnSquareIcon className="w-5 h-5" />
+      )}
       <div className="">{title}</div>
     </Link>
   );

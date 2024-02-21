@@ -32,7 +32,7 @@ const AuthPage = ({ searchParams }: AuthPageProps) => {
     <div className="w-full h-full flex items-center justify-center">
       <div className="w-full md:w-1/2 lg:w-2/6 max-w-[550px] border rounded-md shadow-lg p-4 md:py-6 md:px-8">
         <Auth
-          redirectTo={"https://sunny-biolie-music.vercel.app/"}
+          redirectTo={"https://sbmusic.vercel.app/"}
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}
           providers={["google"]}

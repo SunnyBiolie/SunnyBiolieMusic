@@ -15,6 +15,13 @@ export const metadata: Metadata = {
     template: "%s | SBmusic",
   },
   description: "Listen to music, upload your own audio, and more ...",
+  icons: [
+    {
+      type: "image/png",
+      url: "/logo.png",
+      href: "/logo.png",
+    },
+  ],
 };
 
 export default function RootLayout({

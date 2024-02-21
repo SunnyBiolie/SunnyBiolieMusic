@@ -68,11 +68,13 @@ export const LeftSidebar = () => {
             title="Favorites"
             link="/favorites"
             isActive={pathname === "/favorites"}
+            type="favorites"
           />
           <PlaylistItem
             title="Your upload"
             link="/your-upload"
             isActive={pathname === "/your-upload"}
+            type="your-upload"
           />
         </div>
         <Separator />

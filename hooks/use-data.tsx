@@ -17,7 +17,7 @@ type DataContextType = {
   allSong: Song[] | null;
   isLoading: boolean;
   collections: Collection[] | null;
-  isLoadingCollections: boolean;
+  isLoadingCollections: boolean | null;
 };
 
 export const DataContext = createContext<DataContextType | undefined>(
@@ -62,8 +62,9 @@ export const DataContextProvider = (props: Props) => {
   //
   const { userInfo } = useUser();
   const [collections, setCollections] = useState<Collection[] | null>(null);
-  const [isLoadingCollections, setIsLoadingCollections] =
-    useState<boolean>(false);
+  const [isLoadingCollections, setIsLoadingCollections] = useState<
+    boolean | null
+  >(null);
 
   const getUserCollection = useCallback(
     () =>
@@ -86,9 +87,8 @@ export const DataContextProvider = (props: Props) => {
         } else {
           setCollections(null);
         }
-
-        setIsLoadingCollections(false);
       });
+      setIsLoadingCollections(false);
     }
   }, [getUserCollection, userInfo]);
   //

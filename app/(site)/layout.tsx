@@ -15,7 +15,7 @@ const SiteLayout = ({ children }: { children: React.ReactNode }) => {
           <LeftSidebar />
           <div className="grow shrink min-w-[500px] flex flex-col p-2 gap-2">
             <Header />
-            <BoxWrapper className="overflow-auto p-0 h-fit h-max-full">
+            <BoxWrapper className="overflow-auto p-0 h-full h-max-full">
               {children}
             </BoxWrapper>
           </div>

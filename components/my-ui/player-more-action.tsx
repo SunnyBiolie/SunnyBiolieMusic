@@ -17,7 +17,7 @@ interface MoreActionPlayer {
 export const MoreActionPlayer = ({ audioRef }: MoreActionPlayer) => {
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(
-    Number(localStorage.getItem(`${localStorageKey}volume`)) || 0.5
+    Number(localStorage.getItem(`${localStorageKey}volume`)) || 0.25
   );
 
   const Icon = isMuted ? SpeakerXMarkIcon : SpeakerWaveIcon;
@@ -42,7 +42,7 @@ export const MoreActionPlayer = ({ audioRef }: MoreActionPlayer) => {
     } else {
       audioRef.current.muted = false;
       setIsMuted(false);
-      setVolume(0.1);
+      setVolume(0.05);
     }
   };
 
@@ -64,12 +64,13 @@ export const MoreActionPlayer = ({ audioRef }: MoreActionPlayer) => {
         <Icon className="w-5 h-5 cursor-pointer" onClick={handleToggleVolume} />
         <Slider
           min={0}
-          max={1}
-          step={0.02}
-          defaultValue={1}
+          max={0.5}
+          step={0.01}
+          defaultValue={0.25}
           value={volume}
           onValueChange={setVolume}
           className="w-[93px]"
+          height={4}
         />
       </div>
     </div>

@@ -9,7 +9,7 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useUser } from "@/hooks/use-user";
 import { createSupabaseClientComponent } from "@/lib/supabase/client-component";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import uniqid from "uniqid";
 import { useTriggerFetchData } from "@/hooks/use-data-zustand";
 
@@ -32,6 +32,11 @@ export const CreateCollectionModal = () => {
     },
   });
 
+  useEffect(() => {
+    if (createCollectionModal.isOpen)
+      document.getElementById("collectionTitle")?.focus();
+  }, [createCollectionModal.isOpen]);
+
   if (!user) {
     return;
   }
@@ -39,6 +44,26 @@ export const CreateCollectionModal = () => {
   const onSubmit: SubmitHandler<FieldValues> = async (values) => {
     try {
       setIsLoading(true);
+
+      const { data, error: err } = await supabase
+        .from("collections")
+        .select("title")
+        .eq("user_id", user.id);
+
+      if (err) {
+        setIsLoading(false);
+        return toast.error(err.message);
+      }
+
+      const titles: string[] = [];
+      data.forEach((value) => titles.push(value.title));
+
+      if (titles.includes(values.collectionTitle)) {
+        setIsLoading(false);
+        return toast.error(
+          `"${values.collectionTitle}" is used for another collection!`
+        );
+      }
 
       const { error } = await supabase.from("collections").insert({
         user_id: user.id,
@@ -53,6 +78,7 @@ export const CreateCollectionModal = () => {
       setIsLoading(false);
       createCollectionModal.onClose();
       triggerFetch.setFetchCollections(uniqid());
+      reset();
       return toast.success(
         `Created "${values.collectionTitle}" collection successfully.`
       );
@@ -61,6 +87,11 @@ export const CreateCollectionModal = () => {
         "Something went wrong when creating a new collection."
       );
     }
+  };
+
+  const onClose = () => {
+    createCollectionModal.onClose();
+    reset();
   };
 
   return (
@@ -73,29 +104,32 @@ export const CreateCollectionModal = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-y-4"
         >
-          <Input
-            id="collectionTitle"
-            {...register("collectionTitle", {
-              required: true,
-              maxLength: 100,
-            })}
-            placeholder="Title"
-            aria-invalid={errors.collectionTitle ? "true" : "false"}
-            disabled={isLoading}
-          />
-          {errors.collectionTitle?.type === "required" && (
-            <p className="error-input">Title is required.</p>
-          )}
-          {errors.collectionTitle?.type === "maxLength" && (
-            <p className="error-input">Max length 100 is required.</p>
-          )}
+          <div>
+            <Input
+              id="collectionTitle"
+              {...register("collectionTitle", {
+                required: true,
+                maxLength: 100,
+              })}
+              placeholder="Title"
+              aria-invalid={errors.collectionTitle ? "true" : "false"}
+              disabled={isLoading}
+              className="mb-2"
+            />
+            {errors.collectionTitle?.type === "required" && (
+              <p className="error-input">Title is required.</p>
+            )}
+            {errors.collectionTitle?.type === "maxLength" && (
+              <p className="error-input">Max length 100 is required.</p>
+            )}
+          </div>
           <Button variant="primary" disabled={isLoading}>
             Create
           </Button>
         </form>
         <XMarkIcon
           className="absolute top-4 right-4 w-5 h-5 cursor-pointer"
-          onClick={() => createCollectionModal.onClose()}
+          onClick={onClose}
         />
       </div>
       <div

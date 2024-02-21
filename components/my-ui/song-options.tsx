@@ -15,12 +15,14 @@ interface SongOptionsProps {
   className?: string;
   isInCollection?: boolean;
   song: Song;
+  parent?: "CardMedia" | "HorizontalMedia";
 }
 
 export const SongOptions = ({
   className,
   isInCollection,
   song,
+  parent,
 }: SongOptionsProps) => {
   const params = useParams();
   const router = useRouter();
@@ -110,82 +112,89 @@ export const SongOptions = ({
   };
 
   return (
-    <div ref={ref} className="shadow-md">
-      <EllipsisVerticalIcon
-        className={cn("w-5 h-5 cursor-pointer", className)}
-        onClick={() => {
-          setIsOpen(true);
-          setPosition([
-            window.innerHeight - ref.current?.getBoundingClientRect().top!,
-            window.innerWidth - ref.current?.getBoundingClientRect().left!,
-          ]);
-        }}
-      />
-      {isOpen && (
-        <>
-          <div
-            style={{ bottom: `${position[0]}px`, right: `${position[1]}px` }}
-            className={cn(
-              `z-[101] rounded-md overflow-hidden shadow-md`,
-              isOpen && "fixed"
-            )}
-          >
-            <div className="bg-zinc-950 p-3 w-52">
-              {isInCollection ? (
-                <div
-                  className={cn(
-                    "-mx-3 px-3 py-2 text-neutral-400 hover:text-[#eee] hover:bg-rose-600 transition text-sm font-medium cursor-pointer flex items-center justify-between",
-                    isRemoveLoading && "cursor-not-allowed opacity-50"
-                  )}
-                  onClick={removeSongFromCollection}
-                >
-                  Remove from collection
-                </div>
-              ) : (
-                <div className="flex flex-col gap-y-2">
-                  <div className="self-center font-semibold">
-                    Add to Collection
-                  </div>
-                  <div className="">
-                    {collections?.length !== 0 ? (
-                      collections?.map((col) => (
-                        <div
-                          key={col.id}
-                          className={cn(
-                            "-mx-3 px-3 py-1 text-neutral-400 hover:text-[#ddd] hover:bg-neutral-800 transition text-sm font-medium capitalize cursor-pointer flex items-center justify-between",
-                            isAddLoading && "cursor-not-allowed opacity-50",
-                            col.songs?.includes(song.id) && "opacity-60"
-                          )}
-                          onClick={() => addSongToCollection(song.id, col.id)}
-                        >
-                          {col.title}
-                          {col.songs?.includes(song.id) && (
-                            <CheckIcon className="2-4 h-4"></CheckIcon>
-                          )}
-                        </div>
-                      ))
-                    ) : (
-                      <div
-                        className="-mx-3 px-3 py-1 hover:bg-neutral-800 transition text-sm font-medium cursor-pointer flex items-center gap-x-1"
-                        onClick={() => {
-                          createCollectionModal.onOpen();
-                          setIsOpen(false);
-                        }}
-                      >
-                        Create collection
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-          <div
-            className="fixed top-0 left-0 right-0 bottom-0 z-40"
-            onClick={() => setIsOpen(false)}
-          />
-        </>
+    <div
+      className={cn(
+        parent === "CardMedia" &&
+          "hidden group-hover:block absolute top-2 right-2 bg-neutral-950/20 hover:bg-neutral-950/80 rounded-full p-[2px]  transition cursor-pointer"
       )}
+    >
+      <div ref={ref} className="shadow-md">
+        <EllipsisVerticalIcon
+          className={cn("w-5 h-5 cursor-pointer", className)}
+          onClick={() => {
+            setIsOpen(true);
+            setPosition([
+              window.innerHeight - ref.current?.getBoundingClientRect().top!,
+              window.innerWidth - ref.current?.getBoundingClientRect().left!,
+            ]);
+          }}
+        />
+        {isOpen && (
+          <>
+            <div
+              style={{ bottom: `${position[0]}px`, right: `${position[1]}px` }}
+              className={cn(
+                `z-[101] rounded-md overflow-hidden shadow-md`,
+                isOpen && "fixed"
+              )}
+            >
+              <div className="bg-zinc-950 p-3 w-52">
+                {isInCollection ? (
+                  <div
+                    className={cn(
+                      "-mx-3 px-3 py-2 text-neutral-400 hover:text-[#eee] hover:bg-rose-600 transition text-sm font-medium cursor-pointer flex items-center justify-between",
+                      isRemoveLoading && "cursor-not-allowed opacity-50"
+                    )}
+                    onClick={removeSongFromCollection}
+                  >
+                    Remove from collection
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-y-2">
+                    <div className="self-center font-semibold">
+                      Add to Collection
+                    </div>
+                    <div className="">
+                      {collections?.length !== 0 ? (
+                        collections?.map((col) => (
+                          <div
+                            key={col.id}
+                            className={cn(
+                              "-mx-3 px-3 py-1 text-neutral-400 hover:text-[#ddd] hover:bg-neutral-800 transition text-sm font-medium capitalize cursor-pointer flex items-center justify-between",
+                              isAddLoading && "cursor-not-allowed opacity-50",
+                              col.songs?.includes(song.id) && "opacity-60"
+                            )}
+                            onClick={() => addSongToCollection(song.id, col.id)}
+                          >
+                            {col.title}
+                            {col.songs?.includes(song.id) && (
+                              <CheckIcon className="2-4 h-4"></CheckIcon>
+                            )}
+                          </div>
+                        ))
+                      ) : (
+                        <div
+                          className="-mx-3 px-3 py-1 hover:bg-neutral-800 transition text-sm font-medium cursor-pointer flex items-center gap-x-1"
+                          onClick={() => {
+                            createCollectionModal.onOpen();
+                            setIsOpen(false);
+                          }}
+                        >
+                          Create collection
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div
+              className="fixed top-0 left-0 right-0 bottom-0 z-40"
+              onClick={() => setIsOpen(false)}
+            />
+          </>
+        )}
+      </div>
     </div>
   );
 };
