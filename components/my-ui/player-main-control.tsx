@@ -10,7 +10,6 @@ import {
   TrackNextIcon,
   LoopIcon,
 } from "@radix-ui/react-icons";
-import * as SliderPrimitive from "@radix-ui/react-slider";
 import { Song } from "@/types/custom";
 import { useLoadSongPath } from "@/hooks/useLoadSongPath";
 import { TimerTransform } from "./timer-transform";
@@ -236,14 +235,6 @@ export const PlayerMainControl = forwardRef(function PlayerMainControl(
             )}
           </div>
           <div className="grow">
-            {/* <Slider
-              defaultValue={[0]}
-              value={[position]}
-              onValueChange={([e]) => handldeGoTo(e)}
-              min={0}
-              max={100}
-              step={100 / audioRef.current.duration}
-            /> */}
             <Slider
               min={0}
               max={100}

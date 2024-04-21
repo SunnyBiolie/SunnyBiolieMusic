@@ -47,21 +47,25 @@ export const HorizontalMedia = memo(function HorizontalMedia({
         className
       )}
     >
-      {thumbnail ? (
-        <div className="shrink-0 relative h-12 aspect-square rounded-sm overflow-hidden">
+      <div className="shrink-0 relative h-12 aspect-square rounded-sm overflow-hidden bg-neutral-700/50">
+        {thumbnail && (
           <Image
             src={thumbImagePath!}
             alt="Thumb Image"
             fill
             sizes="full"
-            className="object-cover"
+            className="object-cover select-none"
           />
-        </div>
-      ) : (
-        <div className="shrink-0 flex items-center justify-center h-12 aspect-square rounded-sm overflow-hidden bg-neutral-700/50">
-          <PlayIcon className="w-1/2" />
-        </div>
-      )}
+        )}
+        {!isInPlayer && (
+          <div className="absolute top-0 left-0 bottom-0 right-0 bg-neutral-700/50">
+            <PlayIcon
+              className="w-1/2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+              onClick={handleClick}
+            />
+          </div>
+        )}
+      </div>
       <div
         className={cn(
           "flex-1 flex-col overflow-hidden",
@@ -72,7 +76,7 @@ export const HorizontalMedia = memo(function HorizontalMedia({
           className="capitalize text-sm font-semibold hover:underline cursor-pointer"
           text={song.title}
           lineClamp={1}
-          onClick={() => handleClick()}
+          onClick={handleClick}
         />
         <TruncateText
           text={song.authors}

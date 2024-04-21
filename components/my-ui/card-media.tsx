@@ -30,7 +30,7 @@ export const CardMedia = memo(function CardMedia({
           alt="Thumb Image"
           fill
           sizes="full"
-          className="object-cover"
+          className="object-cover select-none"
           priority={priority}
         />
         <div

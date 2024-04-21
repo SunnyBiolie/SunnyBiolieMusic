@@ -1,9 +1,9 @@
 import { Song } from "@/types/custom";
-import { useUser } from "./use-user";
+// import { useUser } from "./use-user";
 import { useMusicPlayer, useQueue } from "./use-data-zustand";
 
 const useOnMusicPLay = (songs: Song[]) => {
-  const { user } = useUser();
+  // const { user } = useUser();
   const musicPlayer = useMusicPlayer();
   const queue = useQueue();
 

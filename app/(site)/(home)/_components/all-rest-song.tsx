@@ -24,7 +24,7 @@ export const AllRestSong = ({ songs }: AllRestSongProps) => {
           <HorizontalMedia
             key={song.id}
             song={song}
-            thumbnail={false}
+            thumbnail={true}
             onClick={(songId: string) => onMusicPlay(songId)}
           />
         ))}
