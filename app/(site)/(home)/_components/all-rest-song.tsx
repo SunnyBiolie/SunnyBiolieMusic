@@ -18,7 +18,7 @@ export const AllRestSong = ({ songs }: AllRestSongProps) => {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold pb-2">All song</h2>
+      <h2 className="text-2xl font-semibold pb-2">Rest songs</h2>
       <div>
         {songs.map((song) => (
           <HorizontalMedia
@@ -36,7 +36,7 @@ export const AllRestSong = ({ songs }: AllRestSongProps) => {
 AllRestSong.Skeleton = function SkeletonAllRestSong() {
   return (
     <div>
-      <h2 className="text-2xl font-semibold pb-4">All song</h2>
+      <h2 className="text-2xl font-semibold pb-4">Rest songs</h2>
       <div className="flex flex-col gap-y-3">
         <HorizontalMediaSkeleton />
         <HorizontalMediaSkeleton />

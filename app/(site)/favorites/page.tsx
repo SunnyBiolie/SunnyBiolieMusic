@@ -45,7 +45,7 @@ const FavoritesPage = () => {
         <HorizontalMedia
           key={song.id}
           song={song}
-          thumbnail={false}
+          thumbnail={true}
           onClick={() => onMusicPlay(song.id)}
         />
       ))}

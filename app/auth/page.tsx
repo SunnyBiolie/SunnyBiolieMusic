@@ -39,7 +39,7 @@ const AuthPage = ({ searchParams }: AuthPageProps) => {
           redirectTo={"https://sbmusic.vercel.app/"}
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}
-          providers={["google"]}
+          providers={["google", "github"]}
           view={view as ViewType}
           theme="dark"
         />

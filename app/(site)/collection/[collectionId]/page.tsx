@@ -161,7 +161,7 @@ const CollectionPage = () => {
             <HorizontalMedia
               key={song.id}
               song={song}
-              thumbnail={false}
+              thumbnail={true}
               onClick={() => musicPlay(song.id)}
               isInCollection={true}
             />

@@ -48,6 +48,7 @@ export const LikeButton = ({
     if (!songId) return toast.error(`There is no song to continue.`);
 
     if (isLiked) {
+      setIsLiked(false);
       let updatedData = userInfo.liked_songs ? userInfo.liked_songs : [];
       const index = updatedData.indexOf(songId);
       if (index > -1) {
@@ -60,14 +61,15 @@ export const LikeButton = ({
         .eq("id", user.id);
 
       if (error) {
+        setIsLiked(true);
         toast.error(error.message);
       } else {
-        setIsLiked(false);
         toast.success(`Removed out from favorites.`);
 
         userInfo.liked_songs = updatedData;
       }
     } else {
+      setIsLiked(true);
       let updatedData = userInfo.liked_songs ? userInfo.liked_songs : [];
       if (updatedData.indexOf(songId) > -1) {
         return toast.error(
@@ -82,9 +84,9 @@ export const LikeButton = ({
         .eq("id", user.id);
 
       if (error) {
+        setIsLiked(false);
         toast.error(error.message);
       } else {
-        setIsLiked(true);
         toast.success(`Added this song to favorites.`);
 
         userInfo.liked_songs = updatedData;

@@ -11,7 +11,7 @@ const HomePage = () => {
   const { allSong, isLoading: isLoadingData } = useData();
   const { isLoading: isLoadingUser } = useUser();
 
-  if (isLoadingUser || isLoadingData) {
+  if (isLoadingUser && isLoadingData) {
     return (
       <div className="p-4 flex flex-col gap-y-4">
         <NewSongs.Skeleton />
@@ -20,7 +20,7 @@ const HomePage = () => {
     );
   } else if (!allSong)
     return (
-      <div>{`There are no songs to display. Go to "Upload" to upload more.`}</div>
+      <div className="p-4">{`There are no songs to display. Go to "Upload" to upload more.`}</div>
     );
 
   const newSongs = allSong.slice(0, numberNewSongsDisplay);
